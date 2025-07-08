@@ -1,0 +1,4 @@
+{
+    "*.ts": ["es-lint --fix"],
+    "*.tsx": ["es-lint --fix"]
+}
