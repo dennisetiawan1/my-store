@@ -8,11 +8,11 @@ export default async function handler(
   if (req.method === "POST") {
     await signUp(req.body, (status: boolean) => {
       if (status) {
-        res
+        return res
           .status(200)
           .json({ status: true, statusCode: 200, message: "success" });
       } else {
-        res
+        return res
           .status(400)
           .json({ status: false, statusCode: 400, message: "failed" });
       }
