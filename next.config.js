@@ -3,4 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
 }
 
-module.exports = nextConfig
+// next.config.js
+module.exports = {
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  // Atur lokasi src sebagai root pages
+  experimental: {
+    appDir: false,
+  },
+};
