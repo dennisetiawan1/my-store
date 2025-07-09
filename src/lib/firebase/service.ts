@@ -20,35 +20,38 @@ export async function retrieveDataById(collectionName: string, id:string){
 }
 
 export async function signUp(userData: {
-    email: string;
-    fullname: string;
-    phone: string;
-    password: string;
-    role?: string;
-}, callback: Function){
+  email: string;
+  fullname: string;
+  phone: string;
+  password: string;
+  role?: string;
+}): Promise<boolean> {
+  try {
     const q = query(
-        collection(firestore, 'users'),
-        where('email', "==", userData.email),
-    )
+      collection(firestore, "users"),
+      where("email", "==", userData.email),
+    );
     const snapshot = await getDocs(q);
-    const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-    if (data.length > 0){
-        callback(false)
-    } else{
-        if (!userData.role){
-            userData.role = 'member';
-        }
-        userData.password = await bcrypt.hash(userData.password, 10)
-        await addDoc(collection(firestore, 'users'), userData)
-        .then(() => {
-            callback(true);
-        })
-        .catch((error) => {
-            callback(false);
-            console.log(error)
-        })
+
+    // Cek apakah email sudah ada
+    if (!snapshot.empty) {
+      return false;
     }
+
+    // Tambahkan role default jika kosong
+    if (!userData.role) {
+      userData.role = "member";
+    }
+
+    // Hash password
+    userData.password = await bcrypt.hash(userData.password, 10);
+
+    // Simpan ke Firestore
+    await addDoc(collection(firestore, "users"), userData);
+
+    return true;
+  } catch (err) {
+    console.error("🔥 Error di signUp:", err);
+    throw err; // biar bisa ditangkap di handler API
+  }
 }
